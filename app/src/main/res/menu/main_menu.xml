@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/refresh_button"
+        android:title="@string/refresh_btn_title"
+        app:showAsAction="ifRoom"
+        />
+
+        <item android:id="@+id/most_popular"
+            android:title="@string/popular_menu_str"
+            />
+
+        <item android:id="@+id/top_rated"
+            android:title="@string/top_rated_str"
+             />
+
+    <item android:id="@+id/favorites"
+        android:title="@string/favorites_menu_string"
+        />
+
+
+</menu>

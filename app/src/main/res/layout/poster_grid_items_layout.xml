@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+<FrameLayout
+android:layout_width="wrap_content" android:layout_height="wrap_content">
+<LinearLayout
+    android:id="@+id/poster_layout"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+
+
+
+    <ImageView
+        android:id="@+id/main_poster_image"
+        android:layout_width="185dp"
+        android:layout_height="277dp"
+        android:adjustViewBounds="false"
+        android:cropToPadding="false"
+        android:contentDescription="this is where the grid image is loaded"/>
+
+
+
+
+</LinearLayout>
+
+</FrameLayout>
+</layout>

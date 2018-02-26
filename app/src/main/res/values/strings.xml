@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <string name="refresh_btn_title">Refresh</string>
+    <string name="popular_menu_str">Most Popular</string>
+    <string name="top_rated_str">Highest Rated</string>
+    <string name="error_string">Error found. refresh please</string>
+    <string name="plot_string">Plot Synopsis: </string>
+    <string name="voter_string">Vote Average: </string>
+    <string name="your_favorite_label">Your Favorite</string>
+    <string name="release_str">"Release Date: </string>
+    <string name="title_string">Title: </string>
+    <string name="favorites_menu_string">Favorites </string>
+    <string name="year_label">Year Released:</string>
+    <string name="release_date">1964</string>
+    <string name="poster_description">This is the poster of the Movie</string>
+    <string name="star_description">Tap to make this movie your favorite</string>
+    <string name="review_label_description">Movie Review Section</string>
+    <string name="trailer_label_description">Trailer Section</string>
+    <string name="horizontal_line">Horizontal Line</string>
+
+    <string name="movie_title_place_holder">The Beauty and the beast</string>
+    <string name="voter_average_place_holder">9494</string>
+    <string name="synopsis_place_holder">Minions Stuart, Kevin and Bob are recruited by Scarlet Overkill, a super-villain who, alongside her inventor husband Herb,
+        hatches a plot to take over the world.</string>
+    <string name="trailer_header">Trailers: </string>
+    <string name="trailer_button_1_text">Trailer 1</string>
+    <string name="trailer_button_2_text">Trailer 2</string>
+    <string name="trailer_button_3_text">Trailer 3</string>
+    <string name="reviews_title">Movie Reviews: </string>
+    <string name="review_1_placeholder">Film San Andreas nice but to be honest I do not like the plot, why? because in the story of this movie seem monotonous and selfish. Many victims around but why Ray and Emma only focused to rescue his daughter
+        (Blake) alone, but Ray is living as rescuers, the film tends to be lacking in the delivery of its humanitarian message.</string>
+    <string name="review_2_placeholder">This is the second review of movie. this text view
+    will consist the second review of the movie</string>
+    <string name="author_1">Author Example</string>
+    <string name="review_3">Lots of rocks everywhere...\r\n\r\n. It\'s CGI destruction time as Dwayne Johnson battles earthquakes and a tsunami to go rescue his daughter - with estranged wife in tow of course.\r\n\r\nDisaster films are easy to kick because very rarely they are nothing more than candy carnage with a trite screenplay and cheese laden dialogue. Such is the case with San Andreas. In essence this is a remake of Roland Emmerich\'s 2012, only this is the shorter version with the time span that 2012 should have had. This does exactly what the marketing department promised it would, namely lots of crash bang and wallop, but just like Emmerich\'s behemoth it gets boring entering the final third, the writing just not good enough to hold interest once the noise and destruction dies down before the big finale arrives. Suspense is absent, emotional investment in characters is null and void, while there are no worthwhile surprises in store. But on the plus side Johnson is a likable guy and he carries us through till the end
+        of what is a fun movie if expectation levels are appropriately set at dumb popcorn fodder.</string>
+
+
+
+</resources>
