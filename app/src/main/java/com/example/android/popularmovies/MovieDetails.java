@@ -9,12 +9,13 @@ import android.os.Parcelable;
 //crate data object and implement parcelable
 public class MovieDetails implements Parcelable {
    public String title, releaseDate, voteAverage, description,image,movieId,
-           trailerUrl1,trailerUrl2,trailerUrl3,
-           reviewUrl1,reviewUrl2,reviewUrl3;
+           trailerUrl1,trailerUrl2,trailerUrl3,author1,author2,author3,
+           review1, review2, review3;
 
 
    public MovieDetails(String passedTitle, String passedReleaseDate, String passedVoteAverage, String passedDescription, String passedImageUrl
-   ,String passedMovieId,String passedTrailerUrl1,String passedTrailerUrl2,String passedTrailerUrl3,String passedReviewUrl1,String passedReviewUrl2,String passedReviewUrl3)
+   ,String passedMovieId,String passedTrailerUrl1,String passedTrailerUrl2,String passedTrailerUrl3,String passedAuthor1,String passedAuthor2,
+                       String passedAuthor3,String passedReview1,String passedReview2,String passedReview3)
     {
         this.title =passedTitle;
         this.releaseDate =passedReleaseDate;
@@ -26,9 +27,12 @@ public class MovieDetails implements Parcelable {
         this.trailerUrl1 =passedTrailerUrl1;
         this.trailerUrl2=passedTrailerUrl2;
         this.trailerUrl3=passedTrailerUrl3;
-        this.reviewUrl1=passedReviewUrl1;
-        this.reviewUrl2=passedReviewUrl2;
-        this.reviewUrl3=passedReviewUrl3;
+        this.author1=passedAuthor1;
+        this.author2=passedAuthor2;
+        this.author3=passedAuthor3;
+        this.review1 =passedReview1;
+        this.review2 =passedReview2;
+        this.review3 =passedReview3;
     }
 
     private MovieDetails(Parcel p){
@@ -42,9 +46,12 @@ public class MovieDetails implements Parcelable {
         trailerUrl1 =p.readString();
         trailerUrl2 =p.readString();
         trailerUrl3 =p.readString();
-        reviewUrl1 =p.readString();
-        reviewUrl2 =p.readString();
-        reviewUrl3 =p.readString();
+        author1=p.readString();
+        author2=p.readString();
+        author3=p.readString();
+        review1 =p.readString();
+        review2 =p.readString();
+        review3 =p.readString();
 
     }
 
@@ -66,9 +73,9 @@ public class MovieDetails implements Parcelable {
         out.writeString(trailerUrl1);
         out.writeString(trailerUrl2);
         out.writeString(trailerUrl3);
-        out.writeString(reviewUrl1);
-        out.writeString(reviewUrl2);
-        out.writeString(reviewUrl3);
+        out.writeString(review1);
+        out.writeString(review2);
+        out.writeString(review3);
 
     }
 

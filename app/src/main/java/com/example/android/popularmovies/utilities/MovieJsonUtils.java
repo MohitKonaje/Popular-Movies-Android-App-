@@ -48,6 +48,7 @@ public class MovieJsonUtils {
 
 
                 movie_values[i]=new MovieDetails(title, releaseDate, voterAverage,description, posterUrl,movieId,
+                        null,null,null,
                         null,null,null,null,null,null);
             }
 
@@ -58,65 +59,66 @@ public class MovieJsonUtils {
         return movie_values;
     }
 
-    public static MovieDetails get_reviews_values(String jsonString, MovieDetails data){
+    public static MovieDetails get_reviews_values(String jsonString, MovieDetails selectedMovie){
 try {
 
     //create json object to read json data
     JSONObject object = new JSONObject(jsonString);
     //select results
     JSONArray results = object.getJSONArray("results");
-    //create string to store reviews
-    String [] reviews = new String[2];
+    //create string array to store reviews
+    String [] reviews = new String[3];
+    //create string array to store reviews
+    String [] authors = new String[3];
     //collect reviews
-    for(int i=0;i< 2;i++){
+    for(int i=0;i<= 2;i++){
+        if(i>results.length()-1){
+            authors[i]="";
+            reviews[i]="";
+        }
+        else{
         JSONObject reviewItem = results.getJSONObject(i);
+        authors[i] = reviewItem.getString("author");
         reviews[i] = reviewItem.getString("content");
+    }}
+
+    //update the movie data with reviews and authors
+
+    if(reviews[0]=="") {
+        selectedMovie.review1 = "No reviews in this movie";
+    }else{
+        selectedMovie.review1= reviews[0];
     }
-
-    //store reviews which are available
-
-    if(reviews[0]==null) {
-        data.reviewUrl1 = "No reviews in this movie";
-        data.reviewUrl2 = "";
-        data.reviewUrl3 = "";
-        return data;
-    }
-        else
-        data.reviewUrl1=reviews[0];
-
-    if(reviews[1]==null) {
-        data.reviewUrl2 = "";
-        data.reviewUrl3 = "";
-        return data;
-    }
-        else
-        data.reviewUrl2=reviews[1];
-
-    if(reviews[2]==null) {
-        data.reviewUrl3 = "";
-        return data;
-    }
-        else
-        data.reviewUrl3=reviews[2];
-
+    selectedMovie.review2=reviews[1];
+    selectedMovie.review3=reviews[2];
+    selectedMovie.author1=authors[0];
+    selectedMovie.author2=authors[1];
+    selectedMovie.author3=authors[2];
 
 }catch (JSONException e){
     e.printStackTrace();
 }
-    return data;
+    return selectedMovie;
     }
 
 
     public static String[] get_trailer_values(String jsonString){
         //create string to store trailer urls
-        String [] trailersPaths = new String[2];
+        String [] trailersPaths = new String[3];
         try{
         JSONObject object = new JSONObject(jsonString);
-            JSONArray results = object.getJSONArray("youtube");
+            JSONArray results = object.getJSONArray("results");
             //collect reviews
-            for(int i=0;i< 2;i++){
-                JSONObject trailerItem = results.getJSONObject(i);
-                trailersPaths[i] = trailerItem.getString("source");
+            for(int i=0;i<= 2;i++) {
+                if (i > results.length() - 1) {
+                    trailersPaths[i] = "";
+                } else {
+                    JSONObject trailerItem = results.getJSONObject(i);
+                    if (trailerItem == null)
+                        trailersPaths[i] = "";
+                    else
+                        trailersPaths[i] = trailerItem.getString("key");
+                }
             }
         }catch (JSONException e){
             e.printStackTrace();

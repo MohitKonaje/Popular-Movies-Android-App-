@@ -53,23 +53,23 @@ public class NetworkUtils {
     }
 
     public static MovieDetails youtube_trailer_url_builder(String[] sources,MovieDetails movie){
-    String[] trailerUrls = new String[2];
-        for(int i=0;i<2;i++){
-        if(sources[i]==null)
+    String[] trailerUrls = new String[3];
+        for(int i=0;i<=2;i++){
+        if(sources[i]=="")
                 trailerUrls[i]="";
         else
         trailerUrls[i]="https://www.youtube.com/watch?v="+sources[i];
     }
-        movie.trailerUrl1=sources[0];
-        movie.trailerUrl2=sources[1];
-        movie.trailerUrl3=sources[2];
+        movie.trailerUrl1=trailerUrls[0];
+        movie.trailerUrl2=trailerUrls[1];
+        movie.trailerUrl3=trailerUrls[2];
     return movie;
     }
 
 
 
     public static URL[] trailer_review_url_builder(String movie_id){
-        URL[] urls = new URL[1];
+        URL[] urls = new URL[2];
         //building trailer json url
         Uri trailerLink = Uri.parse(baseUrl).buildUpon()
                 .path("3/movie/"+movie_id+"/videos")
