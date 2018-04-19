@@ -24,6 +24,9 @@
             tools:targetApi="jelly_bean">
 
         </activity>
+        <provider
+            android:name="com.example.android.popularmovies.data.FavoritieMovieProvider"
+            android:authorities="com.example.android.popularmovies"></provider>
     </application>
 
 </manifest>

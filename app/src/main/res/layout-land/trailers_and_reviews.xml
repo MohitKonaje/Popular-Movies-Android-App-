@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
-
+    <data>
+        <variable name="movie" type="com.example.android.popularmovies.MovieDetails"/>
+    </data>
     <android.support.constraint.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -52,7 +54,8 @@
             android:layout_marginTop="0dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/horizontal_line"
-            tools:text="@string/trailer_button_1_text" />
+            tools:text="@string/trailer_button_1_text"
+            android:onClick="trailer1"/>
 
         <Button
             android:id="@+id/trailer_btn_2"
@@ -65,7 +68,8 @@
             app:layout_constraintRight_toLeftOf="@+id/trailer_btn_3"
             app:layout_constraintTop_toTopOf="@+id/trailer_btn_1"
             app:layout_constraintVertical_bias="0.0"
-            tools:text="@string/trailer_button_2_text" />
+            tools:text="@string/trailer_button_2_text"
+            android:onClick="trailer2"/>
 
         <Button
             android:id="@+id/trailer_btn_3"
@@ -78,7 +82,8 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/trailer_btn_2"
             app:layout_constraintVertical_bias="0.0"
-            tools:text="@string/trailer_button_3_text" />
+            tools:text="@string/trailer_button_3_text"
+            android:onClick="trailer3"/>
 
         <ImageView
             android:id="@+id/horizontal_line_2"
@@ -119,7 +124,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/reviews_title"
             tools:ignore="RtlHardcoded"
-            tools:text="@string/author_1" />
+            tools:text="@{movie.author1}" />
 
         <TextView
             android:id="@+id/review_1"
@@ -133,7 +138,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/author_1"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/author_1"
-            tools:text="@string/review_1_placeholder"
+            tools:text="@{movie.review1}"
             app:layout_constraintHorizontal_bias="0.5" />
 
         <TextView
@@ -148,7 +153,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/author_2"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/author_2"
-            tools:text="@string/review_2_placeholder" />
+            tools:text="@{movie.review2}" />
 
         <TextView
             android:id="@+id/author_2"
@@ -161,7 +166,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/review_1"
             tools:ignore="RtlHardcoded"
-            tools:text="@string/author_1" />
+            tools:text="@{movie.author2}" />
 
         <TextView
             android:id="@+id/author_3"
@@ -174,7 +179,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/review_2"
             tools:ignore="RtlHardcoded"
-            tools:text="@string/author_1" />
+            tools:text="@{movie.author3}" />
 
         <TextView
             android:id="@+id/review_3"
@@ -187,7 +192,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/author_3"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/author_3"
-            tools:text="@string/review_1_placeholder" />
+            tools:text="@{movie.review3}"/>
 
     </android.support.constraint.ConstraintLayout>
 </layout>

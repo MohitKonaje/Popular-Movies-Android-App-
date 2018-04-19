@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout >
+    <data>
+        <variable name="movie" type="com.example.android.popularmovies.MovieDetails"/>
+    </data>
 
     <android.support.constraint.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -15,13 +18,14 @@
             android:id="@+id/poster"
             android:layout_width="185dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="-12dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:contentDescription="@string/poster_description"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/example_poster"
-            android:layout_marginTop="1dp" />
+            android:layout_marginTop="1dp"
+            />
 
         <TextView
             android:id="@+id/movie_title"
@@ -38,7 +42,7 @@
             app:layout_constraintHorizontal_bias="0.48"
             app:layout_constraintLeft_toRightOf="@+id/poster"
             app:layout_constraintRight_toRightOf="parent"
-            tools:text="@string/movie_title_place_holder"
+            tools:text="@{movie.title}"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -66,7 +70,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/vote_average_header"
             app:layout_constraintRight_toRightOf="@+id/vote_average_header"
             app:layout_constraintTop_toBottomOf="@+id/vote_average_header"
-            tools:text="@string/voter_average_place_holder" />
+            tools:text="@{movie.voteAverage}" />
 
         <TextView
             android:id="@+id/your_favorite_label"
@@ -84,17 +88,17 @@
             android:id="@+id/your_favorite_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:background="@android:color/background_light"
             android:contentDescription="@string/star_description"
             app:layout_constraintLeft_toLeftOf="@+id/your_favorite_label"
             app:layout_constraintRight_toRightOf="@+id/your_favorite_label"
             app:layout_constraintTop_toBottomOf="@+id/your_favorite_label"
-            app:srcCompat="@android:drawable/btn_star_big_off"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp" />
+            app:srcCompat="@drawable/ic_black_star" />
 
         <TextView
             android:id="@+id/release_date_header"
@@ -121,7 +125,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/release_date_header"
             app:layout_constraintRight_toRightOf="@+id/release_date_header"
             app:layout_constraintTop_toBottomOf="@+id/release_date_header"
-            tools:text="@string/release_date"
+            tools:text="@{movie.releaseDate}"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             app:layout_constraintHorizontal_bias="0.514" />
@@ -143,7 +147,7 @@
 
         <TextView
             android:id="@+id/plot_synopsis"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
@@ -152,7 +156,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            tools:text="@string/synopsis_place_holder"
+            tools:text="@{movie.description}"
             app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@+id/plot_synopsis_header" />
