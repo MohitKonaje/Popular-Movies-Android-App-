@@ -40,7 +40,7 @@ public class FavoriteMoviesDbHelper extends SQLiteOpenHelper {
                 + FavoriteMovieContract.FavoriteMovieEntry.trailerUrl3 +" TEXT,"
                 + FavoriteMovieContract.FavoriteMovieEntry.review1 +" TEXT,"
                 + FavoriteMovieContract.FavoriteMovieEntry.review2 +" TEXT,"
-                + FavoriteMovieContract.FavoriteMovieEntry.review3 +" TEXT," +
+                + FavoriteMovieContract.FavoriteMovieEntry.review3 +" TEXT" +
                 ");";
 
 

@@ -35,6 +35,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
     private static final int LOADER_ID_ONE_MOVIE = 1;
     String movieId;
     private Button trailer1,trailer2,trailer3;
+    //used to identify and toggle img button
+    private static final String BLACK_BTN_TAG="BLACK_STAR";
+    private static final String GOLDEN_BTN_TAG="GOLDEN_STAR";
     private ImageButton favButton;
 
     public ActivityMovieDetailsActivityBinding mBinding;
@@ -53,7 +56,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
         trailer2 = (Button) findViewById(R.id.trailer_btn_2);
         trailer3 = (Button) findViewById(R.id.trailer_btn_3);
         favButton = (ImageButton) findViewById((R.id.your_favorite_btn));
-
+        favButton.setTag(BLACK_BTN_TAG);
 
         //check if movie is already a favorite
         getSupportLoaderManager().initLoader(LOADER_ID_ONE_MOVIE,null,this);
@@ -112,18 +115,20 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
                 cp.put(FavoriteMovieContract.FavoriteMovieEntry.review3,movie.review3);
 
                 //get the selection
-                int selectedImgSrc = (Integer)favButton.getTag();
+
+                String selectedImgSrc = favButton.getTag().toString();
                 //insert details if movie was not favorite
-                if(selectedImgSrc == R.drawable.ic_black_star){
+                if(selectedImgSrc == BLACK_BTN_TAG){
                     Uri insertedUri = getContentResolver().insert(FavoriteMovieContract.FavoriteMovieEntry.FAVROITE_MOVIES_CONTENT_URI,cp);
                     if(insertedUri!=null){
-                         Toast.makeText(getBaseContext(),insertedUri.toString(),Toast.LENGTH_SHORT);
+                         Toast.makeText(getBaseContext(),insertedUri.toString(),Toast.LENGTH_SHORT).show();
+                        favButton.setTag(GOLDEN_BTN_TAG);
                         favButton.setImageResource(R.drawable.ic_gold_star);
                     }
                 }
 
                 //delete movie if movie was in table
-                else{
+                else if(selectedImgSrc == GOLDEN_BTN_TAG){
                     String selectionClause=FavoriteMovieContract.FavoriteMovieEntry.movieId+"=?";
                     String[] selectionArgs={movie.movieId};
 
@@ -133,9 +138,13 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
                             selectionArgs);
                     if(deletedrows==1)
                     {
-                        Toast.makeText(getBaseContext(),"Removed from favorites",Toast.LENGTH_SHORT);
+                        Toast.makeText(getBaseContext(),"Removed from favorites",Toast.LENGTH_SHORT).show();
+                        favButton.setTag(BLACK_BTN_TAG);
+                        favButton.setImageResource(R.drawable.ic_black_star);
                     }else{
-                        Toast.makeText(getBaseContext(),"Not Removed from favorites",Toast.LENGTH_SHORT);
+                        Toast.makeText(getBaseContext(),"Not Removed from favorites",Toast.LENGTH_SHORT).show();
+                        favButton.setTag(GOLDEN_BTN_TAG);
+                        favButton.setImageResource(R.drawable.ic_gold_star);
                     }
                     }
 
@@ -240,6 +249,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
     public void onLoadFinished(Loader<Cursor> loader, Cursor queryResult) {
         //set button to gold star if movie exist in db
         if(queryResult !=null){
+            favButton.setTag(GOLDEN_BTN_TAG);
             favButton.setImageResource(R.drawable.ic_gold_star);
         }
     }

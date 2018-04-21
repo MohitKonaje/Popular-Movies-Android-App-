@@ -20,7 +20,7 @@ import android.support.annotation.Nullable;
 public class FavoritieMovieProvider extends ContentProvider {
 
 
-    FavoriteMoviesDbHelper dbHelper;
+   private FavoriteMoviesDbHelper dbHelper;
 
     public static final int MOVIES = 100;
     public static final int MOVIE_WITH_ID = 101;
@@ -72,14 +72,14 @@ public class FavoritieMovieProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
+    public Uri insert(@NonNull Uri uri, ContentValues contentValues) {
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
       int match = sUriMatcher.match(uri);
         Uri retUri;
         switch(match){
 
             case MOVIES:
-                long id=db.insert(FavoriteMovieContract.FavoriteMovieEntry.tableName,null,contentValues);
+                long id=db.insert(FavoriteMovieContract.MOVIES_PATH,null,contentValues);
 
                 if(id>0){
                 retUri = ContentUris.withAppendedId(FavoriteMovieContract.FavoriteMovieEntry.FAVROITE_MOVIES_CONTENT_URI,id);
@@ -97,8 +97,26 @@ public class FavoritieMovieProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+    public int delete(@NonNull Uri uri, @Nullable String whereClause, @Nullable String[] whereArguments) {
+        final SQLiteDatabase db = dbHelper.getWritableDatabase();
+        int deletedRows;
+        int match = sUriMatcher.match(uri);
+        switch(match){
+            case MOVIE_WITH_ID:
+                deletedRows=db.delete(FavoriteMovieContract.FavoriteMovieEntry.tableName,whereClause,whereArguments);
+                if(deletedRows!=1){
+                    throw new UnsupportedOperationException("Unknown uri:"+ uri);
+                }
+                break;
+            case MOVIES:
+                     deletedRows=db.delete(FavoriteMovieContract.FavoriteMovieEntry.tableName,null,null);
+                break;
+        default:
+            throw new UnsupportedOperationException("Invalid uri:"+ uri);
+        }
+        getContext().getContentResolver().notifyChange(uri,null);
+
+        return deletedRows;
     }
 
     @Override

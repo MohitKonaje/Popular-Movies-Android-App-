@@ -18,5 +18,9 @@
         android:title="@string/favorites_menu_string"
         />
 
+    <item android:id="@+id/reset_favorites"
+        android:title="@string/reset_favorites_str"
+        />
+
 
 </menu>

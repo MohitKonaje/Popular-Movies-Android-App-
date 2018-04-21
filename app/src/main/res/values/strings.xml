@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Popular Movies</string>
     <string name="refresh_btn_title">Refresh</string>
+    <string name="reset_favorites_str">Reset Favorites</string>
     <string name="popular_menu_str">Most Popular</string>
     <string name="top_rated_str">Highest Rated</string>
     <string name="error_string">Error found. refresh please</string>
