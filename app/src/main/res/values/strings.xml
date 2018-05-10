@@ -18,6 +18,8 @@
     <string name="review_label_description">Movie Review Section</string>
     <string name="trailer_label_description">Trailer Section</string>
     <string name="horizontal_line">Horizontal Line</string>
+    <string name="grid_image_discription">this is where the grid image is loaded</string>
+
 
     <string name="movie_title_place_holder">The Beauty and the beast</string>
     <string name="voter_average_place_holder">9494</string>

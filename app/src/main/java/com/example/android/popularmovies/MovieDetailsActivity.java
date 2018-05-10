@@ -1,9 +1,13 @@
 package com.example.android.popularmovies;
 
+import android.app.Activity;
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.support.v4.app.LoaderManager;
@@ -19,18 +23,13 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.android.popularmovies.data.FavoriteMovieContract;
-import com.example.android.popularmovies.data.FavoriteMoviesDbHelper;
 import com.example.android.popularmovies.databinding.ActivityMovieDetailsActivityBinding;
 import com.squareup.picasso.Picasso;
 
-
-import java.net.URI;
-
-import static android.R.drawable.btn_star_big_off;
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
+import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 import static com.example.android.popularmovies.R.layout.activity_movie_details_activity;
 
-public class MovieDetailsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MovieDetailsActivity extends AppCompatActivity implements  LoaderManager.LoaderCallbacks<Cursor> {
     private static final String SAVED_INSTANCE_KEY="SAVED_INSTANCE";
     private static final int LOADER_ID_ONE_MOVIE = 1;
     String movieId;
@@ -49,9 +48,11 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
         super.onCreate(savedInstanceState);
         //set activity layout
         setContentView(activity_movie_details_activity);
+if(this.getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT){
 
+}
         //set data binding layout
-        mBinding = DataBindingUtil.setContentView(this,activity_movie_details_activity);
+        mBinding = DataBindingUtil.setContentView(this,R.layout.activity_movie_details_activity);
         trailer1 = (Button) findViewById(R.id.trailer_btn_1);
         trailer2 = (Button) findViewById(R.id.trailer_btn_2);
         trailer3 = (Button) findViewById(R.id.trailer_btn_3);
@@ -59,7 +60,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
         favButton.setTag(BLACK_BTN_TAG);
 
         //check if movie is already a favorite
-        getSupportLoaderManager().initLoader(LOADER_ID_ONE_MOVIE,null,this);
+   //     getSupportLoaderManager().initLoader(LOADER_ID_ONE_MOVIE,null,this);
 
         //restore data if device rotated
         if(savedInstanceState!= null&& savedInstanceState.containsKey(SAVED_INSTANCE_KEY))
@@ -132,11 +133,11 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
                     String selectionClause=FavoriteMovieContract.FavoriteMovieEntry.movieId+"=?";
                     String[] selectionArgs={movie.movieId};
 
-                    int deletedrows= getContentResolver().delete(
-                            FavoriteMovieContract.FavoriteMovieEntry.FAVROITE_MOVIES_CONTENT_URI,
+                    int deletedrows= getContentResolver().delete(FavoriteMovieContract.FavoriteMovieEntry.FAVROITE_MOVIES_CONTENT_URI
+                                    .buildUpon().appendPath(FavoriteMovieContract.FavoriteMovieEntry.movieId).build(),
                            selectionClause,
                             selectionArgs);
-                    if(deletedrows==1)
+                    if(deletedrows>=1)
                     {
                         Toast.makeText(getBaseContext(),"Removed from favorites",Toast.LENGTH_SHORT).show();
                         favButton.setTag(BLACK_BTN_TAG);
@@ -204,29 +205,31 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
 
 
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(SAVED_INSTANCE_KEY,movie);
-    }
-
-
-
-
-
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
         return new AsyncTaskLoader<Cursor>(this) {
-            Cursor returnCursor;
+            Cursor retCursor;
+
+            @Override
+            protected void onStartLoading() {
+                if(retCursor==null)
+                    forceLoad();
+                else
+                    deliverResult(retCursor);
+            }
+
             @Override
             public Cursor loadInBackground() {
-                //create parameters for query method
-                String selectionClause=FavoriteMovieContract.FavoriteMovieEntry.movieId+"=?";
-                    String[] selectionArgs={movie.movieId};
+
                 try {
-                  return returnCursor = getContentResolver().query(FavoriteMovieContract.FavoriteMovieEntry.FAVROITE_MOVIES_CONTENT_URI,
+                    //create parameters for query method
+                    String selectionClause=FavoriteMovieContract.FavoriteMovieEntry.movieId+"=?";
+                    String[] selectionArgs={movie.movieId};
+
+                    retCursor= getContentResolver().query(FavoriteMovieContract.FavoriteMovieEntry.FAVROITE_MOVIES_CONTENT_URI
+                                    .buildUpon().appendPath(FavoriteMovieContract.FavoriteMovieEntry.movieId).build()
+                                    ,
                             null,
                             selectionClause,
                             selectionArgs,
@@ -238,8 +241,14 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
                     return null;
                 }
 
+                return retCursor;
 
+            }
 
+            @Override
+            public void deliverResult(Cursor data) {
+                retCursor=data;
+                super.deliverResult(data);
             }
         };
 
@@ -247,8 +256,11 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor queryResult) {
-        //set button to gold star if movie exist in db
+//set button to gold star if movie exist in db
         if(queryResult !=null){
+            queryResult.moveToFirst();
+
+        //    Log.d("Test",""+queryResult.getString(queryResult.getColumnIndex(FavoriteMovieContract.FavoriteMovieEntry.movieId)));
             favButton.setTag(GOLDEN_BTN_TAG);
             favButton.setImageResource(R.drawable.ic_gold_star);
         }
@@ -256,6 +268,13 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        loader.forceLoad();
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(SAVED_INSTANCE_KEY,movie);
+    }
+
 }

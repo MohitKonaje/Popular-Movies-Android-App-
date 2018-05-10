@@ -28,13 +28,18 @@ import java.net.URL;
 import com.example.android.popularmovies.data.FavoriteMovieContract;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 
+import static android.R.attr.id;
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
+
 
 public class MainActivity  extends AppCompatActivity implements MovieGridAdapter.movieGridAdapterOnClickHandler,
-        LoaderManager.LoaderCallbacks {
+        LoaderManager.LoaderCallbacks<Cursor>
+         {
 
     RecyclerView recyclerView;
     TextView errorTextView;
     ProgressBar loadBar;
+    GridLayoutManager mLayout;
     //key for bundle to store the default sort selection value during activity creation/destruction
     public final String SORT_SELECTION_KEY="SELECTION_KEY";
     //load id for all favorite movies
@@ -61,12 +66,14 @@ public class MainActivity  extends AppCompatActivity implements MovieGridAdapter
         //create recyclerView
          recyclerView = (RecyclerView) findViewById(R.id.poster_recycler_view);
 
-        GridLayoutManager mLayout = new GridLayoutManager(this, 2);
+
 
         //span more columns if in landscape mode
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             //set layout to recyclerView
              mLayout = new GridLayoutManager(this, 3);
+        }else{
+            mLayout = new GridLayoutManager(this, 2);
         }
 
         //set fixed size
@@ -75,21 +82,17 @@ public class MainActivity  extends AppCompatActivity implements MovieGridAdapter
         //setting grid layout to recyclerView
         recyclerView.setLayoutManager(mLayout);
 
-        if(savedInstanceState !=null)
+        if(savedInstanceState !=null && savedInstanceState.containsKey(SORT_SELECTION_KEY))
         {
-        if(savedInstanceState.containsKey(SORT_SELECTION_KEY)){
         selection= savedInstanceState.getInt(SORT_SELECTION_KEY);
-        }
         }
         else {
             //set sort selection
             selection = 0; // default
-
         }
 
         //initialise adapter
         mAdapter = new MovieGridAdapter(this,this);
-
 
         //setting adapter
         recyclerView.setAdapter(mAdapter);
@@ -105,7 +108,7 @@ public class MainActivity  extends AppCompatActivity implements MovieGridAdapter
         errorTextView.setVisibility(View.VISIBLE);
 
         if(selection == 2) {
-            getSupportLoaderManager().initLoader(LOADER_ID_All_MOVIES, null, this);
+            getSupportLoaderManager().initLoader(LOADER_ID_All_MOVIES,null,this);
             return;
         }
 
@@ -121,16 +124,10 @@ public class MainActivity  extends AppCompatActivity implements MovieGridAdapter
             new AsyncTaskForMovieDataCollection(this,new FetchMovieData()).execute(link);
         }
         else{
-            recyclerView.setVisibility(View.INVISIBLE);
+            recyclerView.setVisibility(View.GONE);
             errorTextView.setText("No Internet Connection");
             errorTextView.setVisibility(View.VISIBLE);
-
         }
-
-
-
-
-
 
     }
 
@@ -183,7 +180,18 @@ public class MainActivity  extends AppCompatActivity implements MovieGridAdapter
         }
         else if (MenuItemSelection == R.id.reset_favorites){
             //delete all movies in favorites directory
-            getSupportLoaderManager().initLoader(LOADER_ID_DELETE_ALL_MOVIES, null, this);
+            int deletedrows= getContentResolver().delete(FavoriteMovieContract.FavoriteMovieEntry.FAVROITE_MOVIES_CONTENT_URI,
+                    null,
+                    null);
+            if(deletedrows>0){
+                Toast.makeText(this,deletedrows+" Movies deleted",Toast.LENGTH_SHORT).show();
+
+            }else{
+                Toast.makeText(this,"No movies to be deleted",Toast.LENGTH_SHORT).show();
+            }
+
+
+            //getSupportLoaderManager().initLoader(LOADER_ID_DELETE_ALL_MOVIES, null, this);
 
         }
 
@@ -200,7 +208,100 @@ public class MainActivity  extends AppCompatActivity implements MovieGridAdapter
     }
 
 
-    public class FetchMovieData implements InterfaceListener.onTaskCompleteListener<MovieDetails[]>{
+
+             @Override
+             public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+                getTaskId();
+                 switch(id){
+
+                     case LOADER_ID_All_MOVIES:
+
+                 return new AsyncTaskLoader<Cursor>(this) {
+                    Cursor retCursor;
+                     @Override
+                     protected void onStartLoading() {
+                         if(retCursor!=null)
+                             deliverResult(retCursor);
+                         else
+                             forceLoad();
+                     }
+                                @Override
+                                 public Cursor loadInBackground() {
+                                     try {
+                                         return retCursor = getContentResolver().query(FavoriteMovieContract.FavoriteMovieEntry.FAVROITE_MOVIES_CONTENT_URI,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 FavoriteMovieContract.FavoriteMovieEntry.movieId);
+                                     } catch (Exception e) {
+                                         Log.e("PROVIDER_ERROR", "failed to load fav movie data");
+                                         e.printStackTrace();
+
+                                         recyclerView.setVisibility(View.GONE);
+                                         errorTextView.setText("No Favorite Movies Stored");
+                                         errorTextView.setVisibility(View.VISIBLE);
+                                         return null;
+                                     }
+                                 }
+
+                                 @Override
+                                 public void deliverResult(Cursor favMovieData) {
+                                     if (favMovieData != null) {
+                                         retCursor=favMovieData;
+                                         super.deliverResult(favMovieData);
+                                 }
+                             }
+                 };
+
+
+             }
+
+             return null;
+
+             }
+
+
+             @Override
+             public void onLoadFinished(Loader<Cursor> loader, Cursor favMovieData) {
+                 if(getTaskId()==LOADER_ID_All_MOVIES){
+
+                 ContentValues cp = new ContentValues();
+
+                 int i = 0;
+                 while (favMovieData.moveToNext()) {
+                     favoriteMoviesData[i].movieId = cp.get(FavoriteMovieContract.FavoriteMovieEntry.movieId).toString();
+                     favoriteMoviesData[i].image = cp.get(FavoriteMovieContract.FavoriteMovieEntry.image).toString();
+                     favoriteMoviesData[i].title = cp.get(FavoriteMovieContract.FavoriteMovieEntry.movieTitle).toString();
+                     favoriteMoviesData[i].voteAverage = cp.get(FavoriteMovieContract.FavoriteMovieEntry.voteAverage).toString();
+                     favoriteMoviesData[i].releaseDate = cp.get(FavoriteMovieContract.FavoriteMovieEntry.releaseDate).toString();
+                     favoriteMoviesData[i].description = cp.get(FavoriteMovieContract.FavoriteMovieEntry.movieDescription).toString();
+
+                     favoriteMoviesData[i].author1 = cp.get(FavoriteMovieContract.FavoriteMovieEntry.author1).toString();
+                     favoriteMoviesData[i].author2 = cp.get(FavoriteMovieContract.FavoriteMovieEntry.author2).toString();
+                     favoriteMoviesData[i].author3 = cp.get(FavoriteMovieContract.FavoriteMovieEntry.author3).toString();
+                     favoriteMoviesData[i].trailerUrl1 = cp.get(FavoriteMovieContract.FavoriteMovieEntry.trailerUrl1).toString();
+                     favoriteMoviesData[i].trailerUrl2 = cp.get(FavoriteMovieContract.FavoriteMovieEntry.trailerUrl2).toString();
+                     favoriteMoviesData[i].trailerUrl3 = cp.get(FavoriteMovieContract.FavoriteMovieEntry.trailerUrl3).toString();
+                     favoriteMoviesData[i].review1 = cp.get(FavoriteMovieContract.FavoriteMovieEntry.review1).toString();
+                     favoriteMoviesData[i].review2 = cp.get(FavoriteMovieContract.FavoriteMovieEntry.review2).toString();
+                     favoriteMoviesData[i].review3 = cp.get(FavoriteMovieContract.FavoriteMovieEntry.review3).toString();
+                     i++;
+                 }
+                 //handle loadingBar
+                 recyclerView.setVisibility(View.VISIBLE);
+                 errorTextView.setVisibility(View.INVISIBLE);
+                 mAdapter.setData(favoriteMoviesData);
+                 }
+             }
+
+             @Override
+             public void onLoaderReset(Loader<Cursor> loader) {
+
+             }
+
+
+
+             public class FetchMovieData implements InterfaceListener.onTaskCompleteListener<MovieDetails[]>{
 
         //handle data from async task
         @Override
@@ -219,129 +320,12 @@ public class MainActivity  extends AppCompatActivity implements MovieGridAdapter
                 mAdapter.setData(parsedResults);
             }
         }
-    }
-
-
-    @Override
-    public Loader onCreateLoader(int id, Bundle args) {
-        if(id==LOADER_ID_All_MOVIES) {
-
-
-            return new AsyncTaskLoader<Cursor>(this) {
-                Cursor returnCursor;
-
-                @Override
-                protected void onStartLoading() {
-
-                    //check if fav movies loaded
-                    if (returnCursor != null) {
-                        deliverResult(returnCursor);
-                    }
-                    //else load fav movies
-                    else {
-                        forceLoad();
-                    }
-
-                }
-
-
-                @Override
-                public Cursor loadInBackground() {
-
-                    try {
-                        return returnCursor = getContentResolver().query(FavoriteMovieContract.FavoriteMovieEntry.FAVROITE_MOVIES_CONTENT_URI,
-                                null,
-                                null,
-                                null,
-                                FavoriteMovieContract.FavoriteMovieEntry.movieId);
-                    } catch (Exception e) {
-                        Log.e("PROVIDER_ERROR", "failed to load fav movie data");
-                        e.printStackTrace();
-                        return null;
-                    }
-                }
-
-                @Override
-                public void deliverResult(Cursor favMovieData) {
-                    ContentValues cp = new ContentValues();
-                    if (favMovieData != null) {
-                        int i = 0;
-                        while (favMovieData.moveToNext()) {
-                            favoriteMoviesData[i].movieId = cp.getAsString(FavoriteMovieContract.FavoriteMovieEntry.movieId);
-                            favoriteMoviesData[i].image = cp.getAsString(FavoriteMovieContract.FavoriteMovieEntry.image);
-                            favoriteMoviesData[i].title = cp.getAsString(FavoriteMovieContract.FavoriteMovieEntry.movieTitle);
-                            favoriteMoviesData[i].voteAverage = cp.getAsString(FavoriteMovieContract.FavoriteMovieEntry.voteAverage);
-                            favoriteMoviesData[i].releaseDate = cp.getAsString(FavoriteMovieContract.FavoriteMovieEntry.releaseDate);
-                            favoriteMoviesData[i].description = cp.getAsString(FavoriteMovieContract.FavoriteMovieEntry.movieDescription);
-
-                            favoriteMoviesData[i].author1 = cp.getAsString(FavoriteMovieContract.FavoriteMovieEntry.author1);
-                            favoriteMoviesData[i].author2 = cp.getAsString(FavoriteMovieContract.FavoriteMovieEntry.author2);
-                            favoriteMoviesData[i].author3 = cp.getAsString(FavoriteMovieContract.FavoriteMovieEntry.author3);
-                            favoriteMoviesData[i].trailerUrl1 = cp.getAsString(FavoriteMovieContract.FavoriteMovieEntry.trailerUrl1);
-                            favoriteMoviesData[i].trailerUrl2 = cp.getAsString(FavoriteMovieContract.FavoriteMovieEntry.trailerUrl2);
-                            favoriteMoviesData[i].trailerUrl3 = cp.getAsString(FavoriteMovieContract.FavoriteMovieEntry.trailerUrl3);
-                            favoriteMoviesData[i].review1 = cp.getAsString(FavoriteMovieContract.FavoriteMovieEntry.review1);
-                            favoriteMoviesData[i].review2 = cp.getAsString(FavoriteMovieContract.FavoriteMovieEntry.review2);
-                            favoriteMoviesData[i].review3 = cp.getAsString(FavoriteMovieContract.FavoriteMovieEntry.review3);
-                            i++;
-                        }
-                        mAdapter.setData(favoriteMoviesData);
-
-                    } else {
-                        recyclerView.setVisibility(View.INVISIBLE);
-                        errorTextView.setText("No Favorite Movies Stored");
-                        errorTextView.setVisibility(View.VISIBLE);
-
-                    }
-                    super.deliverResult(favMovieData);
-                }
-            };
-        }
-
-            else if(id==LOADER_ID_DELETE_ALL_MOVIES){
-
-                return new AsyncTaskLoader<Cursor>(this) {
-
-
-                    @Override
-                    protected void onStartLoading() {
-                    }
-
-
-                    @Override
-                    public Cursor loadInBackground() {
-
-                        int deletedrows= getContentResolver().delete(
-                                FavoriteMovieContract.FavoriteMovieEntry.FAVROITE_MOVIES_CONTENT_URI,
-                               null,
-                                null);
-                        if(deletedrows>=1)
-                        {
-                            Toast.makeText(getBaseContext(),"Removed All movies from favorites",Toast.LENGTH_SHORT).show();
-                        }else if(deletedrows==0){
-                            Toast.makeText(getBaseContext(),"No Movies Deleted"+deletedrows,Toast.LENGTH_SHORT).show();
-                        }
-                        return null;
-                    }
-
-                };
-        }
-        else{
-            Toast.makeText(this,"illegal operation"+id,Toast.LENGTH_LONG).show();
-            return  null;
-        }
 
     }
 
-    @Override
-    public void onLoadFinished(Loader loader, Object data) {
-    loader.stopLoading();
-    }
 
-    @Override
-    public void onLoaderReset(Loader loader) {
 
-    }
+
 
 }
 

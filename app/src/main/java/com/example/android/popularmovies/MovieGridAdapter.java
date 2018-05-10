@@ -95,9 +95,4 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.Item
         notifyDataSetChanged();
 
     }
-
-
-
-
-
 }

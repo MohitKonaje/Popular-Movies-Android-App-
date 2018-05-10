@@ -18,12 +18,9 @@
         android:padding="16dp"
         android:text="@string/error_string"
         android:textSize="20sp"
-        android:visibility="invisible" />
+       />
     <ProgressBar
         android:id="@+id/loading_bar"
-
-
-
         />
 
 </GridLayout>

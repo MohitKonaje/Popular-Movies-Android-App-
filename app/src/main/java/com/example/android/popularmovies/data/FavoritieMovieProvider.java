@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 /**
  * Created by mk3s on 13-Mar-18.
@@ -30,7 +31,7 @@ public class FavoritieMovieProvider extends ContentProvider {
     private static UriMatcher buildUriMatcher (){
         UriMatcher builder = new UriMatcher(UriMatcher.NO_MATCH);
         builder.addURI(FavoriteMovieContract.AUTHORITY,FavoriteMovieContract.MOVIES_PATH,MOVIES);
-        builder.addURI(FavoriteMovieContract.AUTHORITY,FavoriteMovieContract.MOVIES_PATH + "#",MOVIE_WITH_ID);
+        builder.addURI(FavoriteMovieContract.AUTHORITY,FavoriteMovieContract.MOVIES_PATH + "/*",MOVIE_WITH_ID);
         return builder;
     }
 
@@ -51,15 +52,26 @@ public class FavoritieMovieProvider extends ContentProvider {
         final SQLiteDatabase db = dbHelper.getReadableDatabase();
         int match = sUriMatcher.match(uri);
         switch(match){
-            case MOVIE_WITH_ID:
-                retCursor=db.query(FavoriteMovieContract.FavoriteMovieEntry.tableName,projections,selections,selectionsArgs,null,null
-                ,sortOrder);
+            case MOVIES:
+                retCursor=db.query(FavoriteMovieContract.FavoriteMovieEntry.tableName,projections
+                        ,selections,selectionsArgs,null,null,sortOrder);
                 break;
+            case MOVIE_WITH_ID:
+                try {
+                    retCursor = db.query(FavoriteMovieContract.FavoriteMovieEntry.tableName, null, selections, selectionsArgs, null
+                            , null, null);
+                }catch (SQLException e){
+                   throw new android.database.SQLException ("No query executed "+uri+" Message:"+e.getMessage());
+                }
+
+                    break;
+
             default:
-                throw new android.database.SQLException ("No query executed"+uri);
+                throw new android.database.SQLException ("No query executed "+uri);
         }
         retCursor.setNotificationUri(getContext().getContentResolver(),uri);
 
+        retCursor.moveToNext();
 
         return retCursor;
     }
@@ -104,9 +116,6 @@ public class FavoritieMovieProvider extends ContentProvider {
         switch(match){
             case MOVIE_WITH_ID:
                 deletedRows=db.delete(FavoriteMovieContract.FavoriteMovieEntry.tableName,whereClause,whereArguments);
-                if(deletedRows!=1){
-                    throw new UnsupportedOperationException("Unknown uri:"+ uri);
-                }
                 break;
             case MOVIES:
                      deletedRows=db.delete(FavoriteMovieContract.FavoriteMovieEntry.tableName,null,null);
