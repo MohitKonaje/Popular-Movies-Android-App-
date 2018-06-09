@@ -60,7 +60,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
         if(savedInstanceState!= null&& savedInstanceState.containsKey(SAVED_INSTANCE_KEY))
         {
             movie=savedInstanceState.getParcelable(SAVED_INSTANCE_KEY);
-            //bindData();
+
+            checkIfMovieIsFavorite(this);
         }
         else
         {
@@ -71,6 +72,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     movie = (MovieDetails) intentThatCreatedThisActivity.getParcelableExtra("selected_movie");
                     //get movie id
                     movieId = movie.movieId;
+                //context for AsyncTask
+                final Context mcontext = this;
                     // start async task to collect trailer and review data
                      new AsycTaskForTrailerReviewCollection() {
                         @Override
@@ -78,7 +81,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                             super.onPostExecute(selectedMovie);
                             //set the movie data to the updated version of movie data which includes trailers and reviews
                             movie = selectedMovie;
-                         // bindData();
+                            checkIfMovieIsFavorite(mcontext);
                         }
                     }.execute(movie);
             }

@@ -1,7 +1,6 @@
 package com.example.android.popularmovies;
 
 
-import android.graphics.Movie;
 import android.os.AsyncTask;
 
 import com.example.android.popularmovies.utilities.MovieJsonUtils;
@@ -33,7 +32,7 @@ public class AsycTaskForTrailerReviewCollection extends AsyncTask<MovieDetails,I
             selectedMovie = NetworkUtils.youtube_trailer_url_builder(trailer_source_url, selectedMovie);
 
 
-            //fromat trailer json data into moviedata format
+            //format trailer json data into moviedata format
             selectedMovie = MovieJsonUtils.get_reviews_values(reviewJson, selectedMovie);
         }catch (java.io.IOException e){e.printStackTrace();
         }

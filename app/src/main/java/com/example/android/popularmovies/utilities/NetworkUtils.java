@@ -10,7 +10,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
-import static android.os.Build.VERSION_CODES.M;
 import static com.example.android.popularmovies.BuildConfig.API_KEY;
 
 /**
