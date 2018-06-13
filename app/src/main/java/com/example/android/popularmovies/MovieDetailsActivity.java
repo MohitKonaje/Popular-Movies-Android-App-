@@ -3,9 +3,8 @@ package com.example.android.popularmovies;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.database.Cursor;
-import android.databinding.DataBindingUtil;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
@@ -14,24 +13,49 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.popularmovies.data.FavoriteMovieContract;
-import com.example.android.popularmovies.databinding.ActivityMovieDetailsActivityBinding;
+
 import com.squareup.picasso.Picasso;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import static com.example.android.popularmovies.R.layout.activity_movie_details_activity;
 
 public class MovieDetailsActivity extends AppCompatActivity {
     private static final String SAVED_INSTANCE_KEY="SAVED_INSTANCE";
     String movieId;
-    private Button trailer1,trailer2,trailer3;
+
+    @BindView(R.id.poster) ImageView mPoster;
+
+    @BindView(R.id.movie_title) TextView mMovieTitle;
+    @BindView(R.id.vote_average) TextView mVoterAverage;
+    @BindView(R.id.release_date) TextView mReleaseDate;
+    @BindView(R.id.plot_synopsis) TextView mPlotSynopsis;
+
+    @BindView(R.id.author_1) TextView mAuthor1;
+    @BindView(R.id.author_2) TextView mAuthor2;
+    @BindView(R.id.author_3) TextView mAuthor3;
+    @BindView(R.id.review_1) TextView mReview1;
+    @BindView(R.id.review_2) TextView mReview2;
+    @BindView(R.id.review_3) TextView mReview3;
+
+    @BindView(R.id.trailer_btn_1) Button mTrailer1;
+    @BindView(R.id.trailer_btn_2) Button mTrailer2;
+    @BindView(R.id.trailer_btn_3) Button mTrailer3;
+
+    @BindView(R.id.your_favorite_btn) ImageButton mFavButton;
+
+
+
     //used to identify and toggle img button
     private static final String BLACK_BTN_TAG="BLACK_STAR";
     private static final String GOLDEN_BTN_TAG="GOLDEN_STAR";
-    private ImageButton favButton;
 
-    private ActivityMovieDetailsActivityBinding mBinding;
     MovieDetails movie ;
 
 
@@ -40,20 +64,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //set activity layout
         setContentView(activity_movie_details_activity);
-    if(this.getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT){
 
-}
-
-        trailer1 = (Button) findViewById(R.id.trailer_btn_1);
-        trailer2 = (Button) findViewById(R.id.trailer_btn_2);
-        trailer3 = (Button) findViewById(R.id.trailer_btn_3);
-        //default
-        favButton = (ImageButton) findViewById((R.id.your_favorite_btn));
-       favButton.setTag(BLACK_BTN_TAG);
-       // favButton.setImageResource(R.drawable.ic_black_star);
         //set data binding layout
-        mBinding = DataBindingUtil.setContentView(this, activity_movie_details_activity);
-
+        ButterKnife.bind(this);
+        //default tag
+        mFavButton.setTag(BLACK_BTN_TAG);
         //check if movie is already a favorite
         //checkIfMovieIsFavorite(this);
         //restore data if device rotated
@@ -73,15 +88,15 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     //get movie id
                     movieId = movie.movieId;
                 //context for AsyncTask
-                final Context mcontext = this;
+                final Context mContext = this;
                     // start async task to collect trailer and review data
-                     new AsycTaskForTrailerReviewCollection() {
+                     new AsyncTaskForTrailerReviewCollection() {
                         @Override
                         protected void onPostExecute(MovieDetails selectedMovie) {
                             super.onPostExecute(selectedMovie);
                             //set the movie data to the updated version of movie data which includes trailers and reviews
                             movie = selectedMovie;
-                            checkIfMovieIsFavorite(mcontext);
+                            checkIfMovieIsFavorite(mContext);
                         }
                     }.execute(movie);
             }
@@ -91,7 +106,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     public void favButtonClick(View view){
-        //create and enter movie data in a content values object to store or delete movie from favorities table
+        //create and enter movie data in a content values object to store or delete movie from favourites table
         ContentValues cp = new ContentValues();
         cp.put(FavoriteMovieContract.FavoriteMovieEntry.movieId,movie.movieId);
         cp.put(FavoriteMovieContract.FavoriteMovieEntry.image,movie.image);
@@ -111,37 +126,35 @@ public class MovieDetailsActivity extends AppCompatActivity {
         cp.put(FavoriteMovieContract.FavoriteMovieEntry.review3,movie.review3);
 
         //get the selection
-        String selectedImgSrc =  favButton.getTag().toString();
+        String selectedImgSrc =  mFavButton.getTag().toString();
         //insert details if movie was not favorite
-        if(selectedImgSrc == BLACK_BTN_TAG){
-            Uri insertedUri = getContentResolver().insert(FavoriteMovieContract.FavoriteMovieEntry.FAVROITE_MOVIES_CONTENT_URI,cp);
+        if(selectedImgSrc.equals(BLACK_BTN_TAG)){
+            Uri insertedUri = getContentResolver().insert(FavoriteMovieContract.FavoriteMovieEntry.FAVOURITE_MOVIES_CONTENT_URI,cp);
             if(insertedUri!=null){
-                Toast.makeText(getBaseContext(),insertedUri.toString(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(),"Movie Added to Favourites",Toast.LENGTH_SHORT).show();
                 bindData(GOLDEN_BTN_TAG);
-               favButton.setTag(GOLDEN_BTN_TAG);
-                //favButton.setImageResource(R.drawable.ic_gold_star);
+               mFavButton.setTag(GOLDEN_BTN_TAG);
+
             }
         }
 
         //delete movie if movie was in table
-        else if(selectedImgSrc == GOLDEN_BTN_TAG){
+        else if(selectedImgSrc.equals(GOLDEN_BTN_TAG)){
             String selectionClause=FavoriteMovieContract.FavoriteMovieEntry.movieId+"=?";
             String[] selectionArgs={movie.movieId};
 
-            int deletedrows= getContentResolver().delete(FavoriteMovieContract.FavoriteMovieEntry.FAVROITE_MOVIES_CONTENT_URI
+            int deletedRows= getContentResolver().delete(FavoriteMovieContract.FavoriteMovieEntry.FAVOURITE_MOVIES_CONTENT_URI
                             .buildUpon().appendPath(FavoriteMovieContract.FavoriteMovieEntry.movieId).build(),
                     selectionClause,
                     selectionArgs);
-            if(deletedrows>=1)
+            if(deletedRows>=1)
             {
                 Toast.makeText(getBaseContext(),"Removed from favorites",Toast.LENGTH_SHORT).show();
-                favButton.setTag(BLACK_BTN_TAG);
-               // favButton.setImageResource(R.drawable.ic_black_star);
+                mFavButton.setTag(BLACK_BTN_TAG);
                 bindData(BLACK_BTN_TAG);
             }else{
                 Toast.makeText(getBaseContext(),"Not Removed from favorites",Toast.LENGTH_SHORT).show();
-                favButton.setTag(GOLDEN_BTN_TAG);
-               // favButton.setImageResource(R.drawable.ic_gold_star);
+                mFavButton.setTag(GOLDEN_BTN_TAG);
                 bindData(GOLDEN_BTN_TAG);
             }
         }
@@ -152,26 +165,42 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
 
     public void bindData(String starTag) {
-        mBinding = DataBindingUtil.setContentView(this, activity_movie_details_activity);
-        mBinding.trailersAndReviewsInclude.setMovie(movie);
-        mBinding.basicDetailsInclude.setMovie(movie);
+
+        mMovieTitle.setText(movie.title);
+        mVoterAverage.setText(movie.voteAverage);
+        mReleaseDate.setText(movie.releaseDate);
+        mPlotSynopsis.setText(movie.description);
+
+        mAuthor1.setText(movie.author1);
+        mAuthor2.setText(movie.author2);
+        mAuthor3.setText(movie.author3);
+        mReview1.setText(movie.review1);
+        mReview2.setText(movie.review2);
+        mReview3.setText(movie.review3);
+
+
+
+
 
         if(starTag.equals(GOLDEN_BTN_TAG)){
-            mBinding.basicDetailsInclude.yourFavoriteBtn.setImageResource(R.drawable.ic_gold_star);
+            mFavButton.setImageResource(R.drawable.ic_gold_star);
         }
         else{
-            mBinding.basicDetailsInclude.yourFavoriteBtn.setImageResource(R.drawable.ic_black_star);
+            mFavButton.setImageResource(R.drawable.ic_black_star);
+
         }
         //set poster image
-        Picasso.with(this).load(movie.image).into(mBinding.basicDetailsInclude.poster);
+        Picasso.with(this).load(movie.image).into(mPoster);
         if (movie.trailerUrl1 == null) {
-            mBinding.trailersAndReviewsInclude.trailerBtn1.setActivated(false);
+            mTrailer1.setClickable(false);
         }
         if (movie.trailerUrl2 == null) {
-            mBinding.trailersAndReviewsInclude.trailerBtn2.setActivated(false);
+            mTrailer2.setClickable(false);
+
         }
         if (movie.trailerUrl3 == null) {
-            mBinding.trailersAndReviewsInclude.trailerBtn3.setActivated(false);
+            mTrailer3.setClickable(false);
+
         }
     }
    public void trailer1(View view){
@@ -209,7 +238,7 @@ private void checkIfMovieIsFavorite(Context context){
                 String selectionClause=FavoriteMovieContract.FavoriteMovieEntry.movieId+"=?";
                 String[] selectionArgs={movie.movieId};
 
-                retCursor= getContentResolver().query(FavoriteMovieContract.FavoriteMovieEntry.FAVROITE_MOVIES_CONTENT_URI
+                retCursor= getContentResolver().query(FavoriteMovieContract.FavoriteMovieEntry.FAVOURITE_MOVIES_CONTENT_URI
                                 .buildUpon().appendPath(FavoriteMovieContract.FavoriteMovieEntry.movieId).build(),
                         null,
                         selectionClause,
@@ -230,13 +259,13 @@ private void checkIfMovieIsFavorite(Context context){
         public void deliverResult(Cursor retCursor) {
             if ((retCursor != null) && (retCursor.getCount()>0)) {
 
-                favButton.setTag(GOLDEN_BTN_TAG);
-               // favButton.setImageResource(R.drawable.ic_gold_star);
+                mFavButton.setTag(GOLDEN_BTN_TAG);
+
                 Log.d("Favorite Selection","Movie is already in Favorites");
                 bindData(GOLDEN_BTN_TAG);
             }else{
-                favButton.setTag(BLACK_BTN_TAG);
-             //  favButton.setImageResource(R.drawable.ic_black_star);
+                mFavButton.setTag(BLACK_BTN_TAG);
+
                 Log.d("Favorite Selection","Movie is not in Favorites");
                 bindData(BLACK_BTN_TAG);
             }

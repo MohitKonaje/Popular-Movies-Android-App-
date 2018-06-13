@@ -4,11 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static android.R.attr.version;
 
-/**
- * Created by mk3s on 14-Mar-18.
- */
+
+
 
 public class FavoriteMoviesDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "favoriteMoviesDb.db";

@@ -97,12 +97,11 @@ public class MainActivity  extends AppCompatActivity implements MovieGridAdapter
     void loadMovieData(int selection){
         //make loading bar Visible
         loadBar.setVisibility(View.VISIBLE);
-        errorTextView.setText("Loading");
+        errorTextView.setText(getString(R.string.loading_text));
         errorTextView.setVisibility(View.VISIBLE);
 
         if(selection == 2) {
             loadFavouriteMovieData(this);
-           // getSupportLoaderManager().initLoader(LOADER_ID_All_MOVIES,null,this);
             return;
         }
 
@@ -119,7 +118,7 @@ public class MainActivity  extends AppCompatActivity implements MovieGridAdapter
         }
         else{
             recyclerView.setVisibility(View.GONE);
-            errorTextView.setText("No Internet Connection");
+            errorTextView.setText(getString(R.string.no_internet_error));
             errorTextView.setVisibility(View.VISIBLE);
         }
 
@@ -174,11 +173,11 @@ public class MainActivity  extends AppCompatActivity implements MovieGridAdapter
         }
         else if (MenuItemSelection == R.id.reset_favorites){
             //delete all movies in favorites directory
-            int deletedrows= getContentResolver().delete(FavoriteMovieContract.FavoriteMovieEntry.FAVROITE_MOVIES_CONTENT_URI,
+            int deletedRows= getContentResolver().delete(FavoriteMovieContract.FavoriteMovieEntry.FAVOURITE_MOVIES_CONTENT_URI,
                     null,
                     null);
-            if(deletedrows>0){
-                Toast.makeText(this,deletedrows+" Movies deleted",Toast.LENGTH_SHORT).show();
+            if(deletedRows>0){
+                Toast.makeText(this,deletedRows+" Movies deleted",Toast.LENGTH_SHORT).show();
 
             }else{
                 Toast.makeText(this,"No movies to be deleted",Toast.LENGTH_SHORT).show();
@@ -211,7 +210,7 @@ public class MainActivity  extends AppCompatActivity implements MovieGridAdapter
         @Override
         public Cursor loadInBackground() {
             try {
-                return retCursor = getContentResolver().query(FavoriteMovieContract.FavoriteMovieEntry.FAVROITE_MOVIES_CONTENT_URI,
+                return retCursor = getContentResolver().query(FavoriteMovieContract.FavoriteMovieEntry.FAVOURITE_MOVIES_CONTENT_URI,
                         null,
                         null,
                         null,
@@ -221,7 +220,7 @@ public class MainActivity  extends AppCompatActivity implements MovieGridAdapter
                 e.printStackTrace();
 
                 recyclerView.setVisibility(View.GONE);
-                errorTextView.setText("No Favorite Movies Stored");
+                errorTextView.setText(getString(R.string.no_fav_movie_stored));
                 errorTextView.setVisibility(View.VISIBLE);
                 return null;
             }

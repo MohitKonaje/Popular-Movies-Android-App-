@@ -3,11 +3,6 @@ package com.example.android.popularmovies.data;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import java.net.URI;
-
-/**
- * Created by mk3s on 16-Mar-18.
- */
 
 public class FavoriteMovieContract {
     public static final String AUTHORITY = "com.example.android.popularmovies";
@@ -16,7 +11,7 @@ public class FavoriteMovieContract {
 
 
     public static final class FavoriteMovieEntry implements BaseColumns {
-        public static final  Uri FAVROITE_MOVIES_CONTENT_URI =
+        public static final  Uri FAVOURITE_MOVIES_CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(MOVIES_PATH).build();
 
         public static final String tableName = "FavMovies";

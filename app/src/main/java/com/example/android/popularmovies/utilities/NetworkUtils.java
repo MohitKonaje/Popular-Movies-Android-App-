@@ -12,10 +12,6 @@ import java.util.Scanner;
 
 import static com.example.android.popularmovies.BuildConfig.API_KEY;
 
-/**
- * Created by mk3s on 10/14/2017.
- */
-
 public class NetworkUtils {
 
     //base url
@@ -34,7 +30,7 @@ public class NetworkUtils {
 
        //build top rated sort url if top rated sort option is selected
        if(sort==1){
-           link=null;
+
            link = Uri.parse(baseUrl).buildUpon()
                    .path("3/movie/top_rated")
                    .appendQueryParameter("api_key",API_KEY)
@@ -54,7 +50,7 @@ public class NetworkUtils {
     public static MovieDetails youtube_trailer_url_builder(String[] sources,MovieDetails movie){
     String[] trailerUrls = new String[3];
         for(int i=0;i<=2;i++){
-        if(sources[i]=="")
+        if(sources[i].equals(""))
                 trailerUrls[i]="";
         else
         trailerUrls[i]="https://www.youtube.com/watch?v="+sources[i];

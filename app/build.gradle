@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.jakewharton.butterknife'
 
 android {
     compileSdkVersion 26
@@ -15,7 +16,7 @@ android {
         // A valid key will need to be entered
         buildConfigField("String", "API_KEY", API_KEY)
     }
-    dataBinding.enabled=true;
+
     buildTypes {
         release {
             minifyEnabled false
@@ -24,9 +25,11 @@ android {
     }
     android.defaultConfig.vectorDrawables.useSupportLibrary = true
 }
-
+def BUTTER_KNIFE_VERSION="8.5.1" //current version of butterknife
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile "com.jakewharton:butterknife:$BUTTER_KNIFE_VERSION"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$BUTTER_KNIFE_VERSION"
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
 

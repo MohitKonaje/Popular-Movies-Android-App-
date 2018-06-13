@@ -9,28 +9,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
-/**
- * Created by mk3s on 9/19/2017.
- */
-
 public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.ItemViewHolder>  {
 
     Context context;
     MovieDetails[] mDataItems;
     private final movieGridAdapterOnClickHandler mClickHandler;
-
-
     MovieGridAdapter(Context c, movieGridAdapterOnClickHandler handler){
         this.context = c;
         mClickHandler = handler;
     }
 
-
     public interface movieGridAdapterOnClickHandler {
         void onClick(MovieDetails selected_movie);
     }
-
-
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 

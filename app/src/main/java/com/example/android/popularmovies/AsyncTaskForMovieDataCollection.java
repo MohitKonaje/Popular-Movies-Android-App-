@@ -9,9 +9,7 @@ import com.example.android.popularmovies.utilities.NetworkUtils;
 import java.io.IOException;
 import java.net.URL;
 
-/**
- * Created by mk3s on 26-Oct-17.
- */
+
 
 public class AsyncTaskForMovieDataCollection extends AsyncTask<URL,Integer,MovieDetails[]> {
     Context context;

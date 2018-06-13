@@ -25,7 +25,7 @@
 
         </activity>
         <provider
-            android:name="com.example.android.popularmovies.data.FavoritieMovieProvider"
+            android:name="com.example.android.popularmovies.data.FavouriteMovieProvider"
             android:authorities="com.example.android.popularmovies"
             android:exported="false"/>
     </application>

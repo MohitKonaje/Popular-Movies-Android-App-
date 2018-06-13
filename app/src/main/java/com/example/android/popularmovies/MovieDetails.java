@@ -3,10 +3,7 @@ package com.example.android.popularmovies;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by mk3s on 10/12/2017.
- */
-//crate data object and implement parcelable
+//create data object and implement parcelable
 public class MovieDetails implements Parcelable {
    public String title, releaseDate, voteAverage, description,image,movieId,
            trailerUrl1,trailerUrl2,trailerUrl3,author1,author2,author3,

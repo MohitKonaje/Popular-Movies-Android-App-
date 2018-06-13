@@ -7,12 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static android.R.attr.data;
 
 
-/**
- * Created by mk3s on 22-Oct-17.
- */
 
 public class MovieJsonUtils {
 
@@ -84,7 +80,7 @@ try {
 
     //update the movie data with reviews and authors
 
-    if(reviews[0]=="") {
+    if(reviews[0].equals("")) {
         selectedMovie.review1 = "No reviews in this movie";
     }else{
         selectedMovie.review1= reviews[0];
