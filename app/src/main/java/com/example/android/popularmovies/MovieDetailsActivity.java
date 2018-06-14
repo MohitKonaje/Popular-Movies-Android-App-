@@ -4,10 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -18,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.popularmovies.data.FavoriteMovieContract;
-
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -26,12 +26,16 @@ import butterknife.ButterKnife;
 
 import static com.example.android.popularmovies.R.layout.activity_movie_details_activity;
 
-public class MovieDetailsActivity extends AppCompatActivity {
+public class MovieDetailsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<MovieDetails> {
     private static final String SAVED_INSTANCE_KEY="SAVED_INSTANCE";
+    private static final int TRAILER_REVIEW_COLLECTION_LOADER_ID =12;
     String movieId;
 
-    @BindView(R.id.poster) ImageView mPoster;
+    @BindView(R.id.loading_message) TextView mLoadingMessage;
+    @BindView(R.id.basic_details_include) View mBasicDetailsLayout;
+    @BindView(R.id.trailers_and_reviews_include) View mTrailerReviewLayout;
 
+    @BindView(R.id.poster) ImageView mPoster;
     @BindView(R.id.movie_title) TextView mMovieTitle;
     @BindView(R.id.vote_average) TextView mVoterAverage;
     @BindView(R.id.release_date) TextView mReleaseDate;
@@ -58,7 +62,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     MovieDetails movie ;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,42 +72,34 @@ public class MovieDetailsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         //default tag
         mFavButton.setTag(BLACK_BTN_TAG);
-        //check if movie is already a favorite
-        //checkIfMovieIsFavorite(this);
+
         //restore data if device rotated
         if(savedInstanceState!= null&& savedInstanceState.containsKey(SAVED_INSTANCE_KEY))
         {
             movie=savedInstanceState.getParcelable(SAVED_INSTANCE_KEY);
-
+            //check if movie is already a favorite
             checkIfMovieIsFavorite(this);
         }
         else
         {
             //get passed data
-            Intent intentThatCreatedThisActivity = getIntent();
-            if ((intentThatCreatedThisActivity != null)&& (intentThatCreatedThisActivity.hasExtra("selected_movie"))) {
+            Intent recievedIntent = getIntent();
+            if ((recievedIntent != null)&& (recievedIntent.hasExtra("selected_movie"))) {
                 //set data to views using passed parcelable data object
-                    movie = (MovieDetails) intentThatCreatedThisActivity.getParcelableExtra("selected_movie");
+                    movie = (MovieDetails) recievedIntent.getParcelableExtra("selected_movie");
                     //get movie id
                     movieId = movie.movieId;
-                //context for AsyncTask
-                final Context mContext = this;
-                    // start async task to collect trailer and review data
-                     new AsyncTaskForTrailerReviewCollection() {
-                        @Override
-                        protected void onPostExecute(MovieDetails selectedMovie) {
-                            super.onPostExecute(selectedMovie);
-                            //set the movie data to the updated version of movie data which includes trailers and reviews
-                            movie = selectedMovie;
-                            checkIfMovieIsFavorite(mContext);
-                        }
-                    }.execute(movie);
+                mLoadingMessage.setVisibility(View.VISIBLE);
+                mBasicDetailsLayout.setVisibility(View.GONE);
+                mTrailerReviewLayout.setVisibility(View.GONE);
+                // start async task to collect trailer and review data
+                getSupportLoaderManager().initLoader(TRAILER_REVIEW_COLLECTION_LOADER_ID,null,this);
+
             }
         }
-        checkIfMovieIsFavorite(this);
 
     }
-
+// handle action when start button is pressed
     public void favButtonClick(View view){
         //create and enter movie data in a content values object to store or delete movie from favourites table
         ContentValues cp = new ContentValues();
@@ -163,9 +158,18 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
 
-
+// method to bind data using Butter Knife
     public void bindData(String starTag) {
 
+        //set poster image
+        Picasso.with(this).load(movie.image).into(mPoster);
+
+        //movie loaded remove loading message
+        mLoadingMessage.setVisibility(View.GONE);
+        mBasicDetailsLayout.setVisibility(View.VISIBLE);
+        mTrailerReviewLayout.setVisibility(View.VISIBLE);
+
+        //start binding appropriate views
         mMovieTitle.setText(movie.title);
         mVoterAverage.setText(movie.voteAverage);
         mReleaseDate.setText(movie.releaseDate);
@@ -189,35 +193,46 @@ public class MovieDetailsActivity extends AppCompatActivity {
             mFavButton.setImageResource(R.drawable.ic_black_star);
 
         }
-        //set poster image
-        Picasso.with(this).load(movie.image).into(mPoster);
-        if (movie.trailerUrl1 == null) {
+        //user shouldn't be able to click on trailer if not available
+        if (movie.trailerUrl1.isEmpty()) {
+            mTrailer1.setVisibility(View.INVISIBLE);
             mTrailer1.setClickable(false);
         }
-        if (movie.trailerUrl2 == null) {
-            mTrailer2.setClickable(false);
-
+        if (movie.trailerUrl2.isEmpty()) {
+            mTrailer2.setVisibility(View.INVISIBLE);
+            mTrailer1.setClickable(false);
         }
-        if (movie.trailerUrl3 == null) {
+        if (movie.trailerUrl3.isEmpty()) {
+            mTrailer3.setVisibility(View.INVISIBLE);;
             mTrailer3.setClickable(false);
 
         }
     }
-   public void trailer1(View view){
-        Intent trailerIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(movie.trailerUrl1));
-       startActivity(trailerIntent);
-    }
-    public void trailer2(View view){
-        Intent trailerIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(movie.trailerUrl2));
-        startActivity(trailerIntent);
-    }
-    public void trailer3(View view){
-        Intent trailerIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(movie.trailerUrl3));
-        startActivity(trailerIntent);
+
+    //handle trailer buttons
+    public void trailerButtonClicked(View view){
+        //find out which button clicked
+        int buttonId=view.getId();
+        Intent trailerIntent;
+        switch (buttonId){
+            case R.id.trailer_btn_1:
+                trailerIntent= new Intent(Intent.ACTION_VIEW, Uri.parse(movie.trailerUrl1));
+                startActivity(trailerIntent);
+                break;
+            case R.id.trailer_btn_2:
+               trailerIntent= new Intent(Intent.ACTION_VIEW, Uri.parse(movie.trailerUrl2));
+                startActivity(trailerIntent);
+                break;
+            case R.id.trailer_btn_3:
+               trailerIntent= new Intent(Intent.ACTION_VIEW, Uri.parse(movie.trailerUrl3));
+                startActivity(trailerIntent);
+                break;
+        }
 
     }
 
 
+//check whether the movie is already favourite and bind data
 private void checkIfMovieIsFavorite(Context context){
     AsyncTaskLoader checkTask = new AsyncTaskLoader<Cursor>(context) {
         Cursor retCursor;
@@ -258,7 +273,6 @@ private void checkIfMovieIsFavorite(Context context){
         @Override
         public void deliverResult(Cursor retCursor) {
             if ((retCursor != null) && (retCursor.getCount()>0)) {
-
                 mFavButton.setTag(GOLDEN_BTN_TAG);
 
                 Log.d("Favorite Selection","Movie is already in Favorites");
@@ -276,8 +290,7 @@ private void checkIfMovieIsFavorite(Context context){
  checkTask.startLoading();
 }
 
-
-
+// implement saved instance to store the current movie for next state
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -285,4 +298,25 @@ private void checkIfMovieIsFavorite(Context context){
     }
 
 
+// handle appropriate async task for trailer and review collection
+    @Override
+    public Loader<MovieDetails> onCreateLoader(int id, Bundle args) {
+        if(id== TRAILER_REVIEW_COLLECTION_LOADER_ID){
+        return new AsyncTaskForTrailerReviewCollection(this,movie);
+    }else
+    return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<MovieDetails> loader, MovieDetails returnedMovie) {
+        movie = returnedMovie;
+        //check if movie is already favourite and bind it
+        checkIfMovieIsFavorite(this);
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<MovieDetails> loader) {
+
+    }
 }
