@@ -15,27 +15,23 @@ import android.support.annotation.Nullable;
 
 public class FavouriteMovieProvider extends ContentProvider {
 
-
-   private FavoriteMoviesDbHelper dbHelper;
-
-    public static final int MOVIES = 100;
-    public static final int MOVIE_WITH_ID = 101;
-
+    private static final int MOVIES = 100;
+    private static final int MOVIE_WITH_ID = 101;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
+    private FavoriteMoviesDbHelper dbHelper;
 
-    private static UriMatcher buildUriMatcher (){
+    private static UriMatcher buildUriMatcher() {
         UriMatcher builder = new UriMatcher(UriMatcher.NO_MATCH);
-        builder.addURI(FavoriteMovieContract.AUTHORITY,FavoriteMovieContract.MOVIES_PATH,MOVIES);
-        builder.addURI(FavoriteMovieContract.AUTHORITY,FavoriteMovieContract.MOVIES_PATH + "/*",MOVIE_WITH_ID);
+        builder.addURI(FavoriteMovieContract.AUTHORITY, FavoriteMovieContract.MOVIES_PATH, MOVIES);
+        builder.addURI(FavoriteMovieContract.AUTHORITY, FavoriteMovieContract.MOVIES_PATH + "/*", MOVIE_WITH_ID);
         return builder;
     }
-
 
 
     @Override
     public boolean onCreate() {
         Context context = getContext();
-    dbHelper = new FavoriteMoviesDbHelper(context);
+        dbHelper = new FavoriteMoviesDbHelper(context);
         return true;
     }
 
@@ -46,25 +42,25 @@ public class FavouriteMovieProvider extends ContentProvider {
         Cursor retCursor;
         final SQLiteDatabase db = dbHelper.getReadableDatabase();
         int match = sUriMatcher.match(uri);
-        switch(match){
+        switch (match) {
             case MOVIES:
-                retCursor=db.query(FavoriteMovieContract.FavoriteMovieEntry.tableName,projections
-                        ,selections,selectionsArgs,null,null,sortOrder);
+                retCursor = db.query(FavoriteMovieContract.FavoriteMovieEntry.tableName, projections
+                        , selections, selectionsArgs, null, null, sortOrder);
                 break;
             case MOVIE_WITH_ID:
                 try {
                     retCursor = db.query(FavoriteMovieContract.FavoriteMovieEntry.tableName, null, selections, selectionsArgs, null
                             , null, null);
-                }catch (SQLException e){
-                   throw new android.database.SQLException ("No query executed "+uri+" Message:"+e.getMessage());
+                } catch (SQLException e) {
+                    throw new android.database.SQLException("No query executed " + uri + " Message:" + e.getMessage());
                 }
 
-                    break;
+                break;
 
             default:
-                throw new android.database.SQLException ("No query executed "+uri);
+                throw new android.database.SQLException("No query executed " + uri);
         }
-        retCursor.setNotificationUri(getContext().getContentResolver(),uri);
+        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
 
         retCursor.moveToNext();
 
@@ -81,17 +77,17 @@ public class FavouriteMovieProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues contentValues) {
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
-      int match = sUriMatcher.match(uri);
+        int match = sUriMatcher.match(uri);
         Uri retUri;
-        switch(match){
+        switch (match) {
 
             case MOVIES:
-                long id=db.insert(FavoriteMovieContract.MOVIES_PATH,null,contentValues);
+                long id = db.insert(FavoriteMovieContract.MOVIES_PATH, null, contentValues);
 
-                if(id>0){
-                retUri = ContentUris.withAppendedId(FavoriteMovieContract.FavoriteMovieEntry.FAVOURITE_MOVIES_CONTENT_URI,id);
+                if (id > 0) {
+                    retUri = ContentUris.withAppendedId(FavoriteMovieContract.FavoriteMovieEntry.FAVOURITE_MOVIES_CONTENT_URI, id);
 
-                }else{
+                } else {
                     throw new android.database.SQLException("No records entered" + uri);
                 }
                 break;
@@ -100,7 +96,7 @@ public class FavouriteMovieProvider extends ContentProvider {
         }
         getContext().getContentResolver().notifyChange(uri, null);
 
-    return retUri;
+        return retUri;
     }
 
     @Override
@@ -108,23 +104,24 @@ public class FavouriteMovieProvider extends ContentProvider {
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
         int deletedRows;
         int match = sUriMatcher.match(uri);
-        switch(match){
+        switch (match) {
             case MOVIE_WITH_ID:
-                deletedRows=db.delete(FavoriteMovieContract.FavoriteMovieEntry.tableName,whereClause,whereArguments);
+                deletedRows = db.delete(FavoriteMovieContract.FavoriteMovieEntry.tableName, whereClause, whereArguments);
                 break;
             case MOVIES:
-                     deletedRows=db.delete(FavoriteMovieContract.FavoriteMovieEntry.tableName,null,null);
+                deletedRows = db.delete(FavoriteMovieContract.FavoriteMovieEntry.tableName, null, null);
                 break;
-        default:
-            throw new UnsupportedOperationException("Invalid uri:"+ uri);
+            default:
+                throw new UnsupportedOperationException("Invalid uri:" + uri);
         }
-        getContext().getContentResolver().notifyChange(uri,null);
+        getContext().getContentResolver().notifyChange(uri, null);
 
         return deletedRows;
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+        //since the app does not provide movie updates this method will return 6063 invalid operation code
+        return 6063;
     }
 }

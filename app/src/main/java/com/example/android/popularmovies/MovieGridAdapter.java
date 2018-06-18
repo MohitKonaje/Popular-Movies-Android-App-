@@ -11,7 +11,7 @@ import com.squareup.picasso.Picasso;
 
 public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.ItemViewHolder>  {
 
-    Context context;
+    private Context context;
     MovieDetails[] mDataItems;
     private final movieGridAdapterOnClickHandler mClickHandler;
     MovieGridAdapter(Context c, movieGridAdapterOnClickHandler handler){
@@ -26,7 +26,7 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.Item
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
        //create and set views to be hold
-        ImageView mPosterImage;
+       private ImageView mPosterImage;
         ItemViewHolder (View view){
             super(view);
             mPosterImage = view.findViewById(R.id.main_poster_image);

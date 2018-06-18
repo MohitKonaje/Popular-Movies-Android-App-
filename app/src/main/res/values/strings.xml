@@ -9,9 +9,7 @@
     <string name="voter_string">Vote Average: </string>
     <string name="your_favorite_label">Your Favorite</string>
     <string name="release_str">"Release Date: </string>
-    <string name="title_string">Title: </string>
     <string name="favorites_menu_string">Favorites </string>
-    <string name="year_label">Year Released:</string>
     <string name="release_date">1964</string>
     <string name="poster_description">This is the poster of the Movie</string>
     <string name="star_description">Tap to make this movie your favorite</string>
@@ -33,6 +31,9 @@
     <string name="loading_text">Loading...</string>
     <string name="no_internet_error">"No Internet Connection</string>
     <string name="no_fav_movie_stored">No Favorite Movies Stored</string>
+    <string name="no_movie_to_load">No Movies to load</string>
+    <string name="no_internet_for_trailer_review">Connect to Internet to load reviews and trailer</string>
+
 
     <string name="reviews_title">Movie Reviews: </string>
     <string name="review_1_placeholder">Film San Andreas nice but to be honest I do not like the plot, why? because in the story of this movie seem monotonous and selfish. Many victims around but why Ray and Emma only focused to rescue his daughter

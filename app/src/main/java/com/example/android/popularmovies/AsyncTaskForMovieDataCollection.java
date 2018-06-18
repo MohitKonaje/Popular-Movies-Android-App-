@@ -11,14 +11,14 @@ import java.net.URL;
 
 
 
-public class AsyncTaskForMovieDataCollection extends AsyncTask<URL,Integer,MovieDetails[]> {
-    Context context;
-  private InterfaceListener.onTaskCompleteListener<MovieDetails[]>  listener;
+     class AsyncTaskForMovieDataCollection extends AsyncTask<URL,Integer,MovieDetails[]> {
+     private Context mContext;
+     private InterfaceListener.onTaskCompleteListener<MovieDetails[]> listener;
 
     //fetch task
     public  AsyncTaskForMovieDataCollection(Context ctx, InterfaceListener.onTaskCompleteListener<MovieDetails[]> listener)
     {
-        this.context = ctx;
+        this.mContext = ctx;
         this.listener = listener;
     }
 

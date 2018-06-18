@@ -70,6 +70,9 @@ public class MovieDetails implements Parcelable {
         out.writeString(trailerUrl1);
         out.writeString(trailerUrl2);
         out.writeString(trailerUrl3);
+        out.writeString(author1);
+        out.writeString(author2);
+        out.writeString(author3);
         out.writeString(review1);
         out.writeString(review2);
         out.writeString(review3);

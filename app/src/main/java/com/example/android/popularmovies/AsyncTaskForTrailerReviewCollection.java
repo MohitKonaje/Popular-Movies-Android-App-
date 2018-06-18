@@ -11,7 +11,7 @@ import java.net.URL;
 
 
 public class AsyncTaskForTrailerReviewCollection extends AsyncTaskLoader<MovieDetails> {
-    MovieDetails mMovie;
+   private MovieDetails mMovie;
 
     public AsyncTaskForTrailerReviewCollection(Context context,MovieDetails mMovie) {
         super(context);

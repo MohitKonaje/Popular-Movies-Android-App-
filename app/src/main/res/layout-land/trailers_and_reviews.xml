@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+
     <android.support.constraint.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+
         android:id="@+id/second_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -12,11 +14,11 @@
             android:id="@+id/trailer_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:contentDescription="@string/trailer_label_description"
             android:text="@string/trailer_header"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
@@ -26,32 +28,27 @@
 
         <ImageView
             android:id="@+id/horizontal_line"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
             android:layout_marginTop="8dp"
             android:contentDescription="@string/horizontal_line"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/trailer_header"
             app:srcCompat="@color/colorPrimary" />
 
-    <Button
-        android:id="@+id/trailer_btn_1"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="0dp"
-        android:onClick="trailerButtonClicked"
-        android:text="@string/trailer_button_1_text"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/horizontal_line" />
+        <Button
+            android:id="@+id/trailer_btn_1"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="0dp"
+            android:onClick="trailerButtonClicked"
+            android:text="@string/trailer_button_1_text"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/horizontal_line" />
 
         <Button
             android:id="@+id/trailer_btn_2"
@@ -83,32 +80,26 @@
             tools:text="@string/trailer_button_3_text" />
 
         <ImageView
-            android:id="@+id/horizontal_line_2"
+            android:id="@+id/horizontal_line2"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="0dp"
+            android:layout_height="1dp"
             android:contentDescription="@string/horizontal_line"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/trailer_btn_2"
+            app:layout_constraintTop_toBottomOf="@+id/trailer_btn_1"
             app:srcCompat="@color/colorPrimary" />
+
 
         <TextView
             android:id="@+id/reviews_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:contentDescription="@string/review_label_description"
             android:text="@string/reviews_title"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/horizontal_line_2" />
+            app:layout_constraintTop_toBottomOf="@+id/horizontal_line2" />
 
         <TextView
             android:id="@+id/author_1"
@@ -116,57 +107,37 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
-            android:fontFamily="serif"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/reviews_title"
             tools:ignore="RtlHardcoded"
-            tools:text="@{movie.author1}" />
+            tools:text="@string/author_1" />
 
         <TextView
             android:id="@+id/review_1"
             android:layout_width="500dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginRight="0dp"
             android:layout_marginTop="16dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintLeft_toLeftOf="@+id/author_1"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/author_1"
-            tools:text="@{movie.review1}"
-            app:layout_constraintHorizontal_bias="0.5" />
+            tools:text="@string/review_1_placeholder" />
 
         <ImageView
             android:id="@+id/horizontal_line3"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@color/colorPrimary"
-            android:layout_marginRight="8dp"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginLeft="8dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            android:layout_marginTop="0dp"
-            app:layout_constraintTop_toBottomOf="@+id/review_1"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+            android:contentDescription="@string/horizontal_line"
             app:layout_constraintBottom_toTopOf="@+id/author_2"
-            android:contentDescription="@string/horizontal_line"/>
-
-        <TextView
-            android:id="@+id/review_2"
-            android:layout_width="500dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="0dp"
-            android:layout_marginRight="0dp"
-            android:layout_marginTop="16dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintLeft_toLeftOf="@+id/author_2"
+            app:layout_constraintHorizontal_bias="0.52"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/author_2"
-            tools:text="@{movie.review2}" />
+            app:layout_constraintTop_toBottomOf="@+id/review_1"
+            app:srcCompat="@color/colorPrimary" />
 
         <TextView
             android:id="@+id/author_2"
@@ -174,28 +145,35 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="16dp"
-            android:fontFamily="serif"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/review_1"
             tools:ignore="RtlHardcoded"
-            tools:text="@{movie.author2}" />
+            tools:text="@string/author_1" />
+
+        <TextView
+            android:id="@+id/review_2"
+            android:layout_width="500dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintLeft_toLeftOf="@+id/author_2"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/author_2"
+            tools:text="@string/review_2_placeholder" />
 
         <ImageView
             android:id="@+id/horizontal_line_4"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@color/colorPrimary"
-            android:layout_marginRight="8dp"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginLeft="8dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginBottom="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/author_3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/review_2"
             android:contentDescription="@string/horizontal_line"
-            />
+            app:layout_constraintBottom_toTopOf="@+id/author_3"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/review_2"
+            app:srcCompat="@color/colorPrimary" />
 
 
         <TextView
@@ -204,24 +182,21 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="16dp"
-            android:fontFamily="serif"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/review_2"
             tools:ignore="RtlHardcoded"
-            tools:text="@{movie.author3}" />
+            tools:text="@string/author_1" />
 
         <TextView
             android:id="@+id/review_3"
             android:layout_width="500dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="0dp"
-            android:layout_marginRight="0dp"
             android:layout_marginTop="16dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             app:layout_constraintLeft_toLeftOf="@+id/author_3"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/author_3"
-            tools:text="@{movie.review3}"/>
+            tools:text="@string/review_3" />
 
     </android.support.constraint.ConstraintLayout>

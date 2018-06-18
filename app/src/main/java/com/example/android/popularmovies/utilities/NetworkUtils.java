@@ -1,4 +1,7 @@
 package com.example.android.popularmovies.utilities;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 
 import com.example.android.popularmovies.MovieDetails;
@@ -12,15 +15,22 @@ import java.util.Scanner;
 
 import static com.example.android.popularmovies.BuildConfig.API_KEY;
 
-public class NetworkUtils {
+public final class NetworkUtils {
 
     //base url
     private static final String baseUrl =" https://api.themoviedb.org";
 
 
+    //check if internet connection is available
+    public static boolean checkInternetResource(Context context) {
+        // check for internet connection
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        return networkInfo != null;
+    }
+
     // this method builds a url to get movie data
    public static URL url_builder(int sort){
-
        //building most popular sort url
        URL built_url = null;
        Uri link = Uri.parse(baseUrl).buildUpon()
@@ -99,11 +109,11 @@ public class NetworkUtils {
             Scanner scanner = new Scanner(inputStream);
             //get data per line
             if(scanner.hasNextLine()){
-                String data="";
+                StringBuilder data= new StringBuilder();
                 while(scanner.hasNextLine()){
-                 data += scanner.nextLine();
+                 data.append(scanner.nextLine());
                 }
-            return data;
+            return data.toString();
             }
             else
                 return null;
@@ -111,8 +121,7 @@ public class NetworkUtils {
         }finally {
             //end connection
             connection.disconnect();
-
-        }
+            }
     }
 
 
@@ -131,8 +140,6 @@ public class NetworkUtils {
 
             }catch (MalformedURLException e){
                 e.printStackTrace();
-            }
-
-           return builtUrl.toString();
+            }return builtUrl.toString();
     }
 }
