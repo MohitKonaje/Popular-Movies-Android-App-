@@ -94,7 +94,7 @@ public class FavoritieMovieProvider extends ContentProvider {
                 long id=db.insert(FavoriteMovieContract.MOVIES_PATH,null,contentValues);
 
                 if(id>0){
-                retUri = ContentUris.withAppendedId(FavoriteMovieContract.FavoriteMovieEntry.FAVROITE_MOVIES_CONTENT_URI,id);
+                retUri = ContentUris.withAppendedId(FavoriteMovieContract.FavoriteMovieEntry.FAVOURITE_MOVIES_CONTENT_URI,id);
 
                 }else{
                     throw new android.database.SQLException("No records entered" + uri);
